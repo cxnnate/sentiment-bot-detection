@@ -5,6 +5,7 @@
 ### Custom
 senti-bot-detection/twitter/creds.json
 *.txt
+*.json
 
 ### Linux ###
 *~
