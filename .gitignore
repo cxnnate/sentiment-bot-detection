@@ -3,7 +3,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,linux,windows,vscode,virtualenv,python
 
 ### Custom
-twitter/creds.json
+senti-bot-detection/twitter/data/creds.json
 *.txt
 
 ### Linux ###
