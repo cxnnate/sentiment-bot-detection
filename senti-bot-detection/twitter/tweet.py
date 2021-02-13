@@ -1,16 +1,17 @@
 import re
 import string
 import preprocessor as p
-from nltk import word_tokens
+# from nltk import word_tokens
 
 
-class Tweet(Object):
+class Tweet(object):
 
     def __init__(self, created_at, tweet_id, text, hashtags, user_id, cleaned_tweet=""):
 
         self.created_at = created_at
         self.tweet_id = tweet_id
         self.text_ = text
+        self.hashtags_ = hashtags
         self.cleaned_tweet = cleaned_tweet
         self.user_id = user_id
         self._sentiment = 0
