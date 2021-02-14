@@ -17,3 +17,7 @@ Classify the polarity of a given tweet
 ## Bot Detection
 
 Produce a bot score based on the given features
+
+
+### Author
+Nated
