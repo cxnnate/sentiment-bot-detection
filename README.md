@@ -20,4 +20,4 @@ Produce a bot score based on the given features
 
 
 ### Author
-Nated
+Nate

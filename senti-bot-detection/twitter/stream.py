@@ -31,8 +31,8 @@ class CustomStreamListener(tweepy.StreamListener):
         super(CustomStreamListener, self).__init__()
         self.start_time = time.time()
         self.time_limit = time_limit
-        self.tweet_file = open(ROOT + '/twitter/data/streamed_tweets_' + str(datetime.date.today()) + '.csv', 'a+')
-        self.user_file = open(ROOT + '/twitter/data/streamed_users_' + str(datetime.date.today()) + '.csv', 'a+')
+        self.tweet_file = open(ROOT + '/data/streamed_tweets_' + str(datetime.date.today()) + '.csv', 'a+')
+        self.user_file = open(ROOT + '/data/streamed_users_' + str(datetime.date.today()) + '.csv', 'a+')
 
     
     def on_error(self, status_code):
@@ -70,7 +70,6 @@ class CustomStreamListener(tweepy.StreamListener):
 
         if (time.time() - self.start_time) < self.time_limit:
             if 'text' in response: print(response['text'])
-
             if 'extended_tweet' in response:
                 response['text'] = response['extended_tweet']['full_text']
 
@@ -80,8 +79,7 @@ class CustomStreamListener(tweepy.StreamListener):
                 else:
                     hashtags = [hashtag['text'] for hashtag in response['entities']['hashtags']]
             
-            if 'limit' in response:
-                pass
+            if 'limit' in response: pass
             else:
                 write_tweets.writerow((response['created_at'], response['id'],response['text'], self.clean(response['text']),
                                     hashtags, response['user']['id']))
@@ -95,11 +93,13 @@ class CustomStreamListener(tweepy.StreamListener):
             self.user_file.close()
             return False
     
+
     def clean(self, text):
         """
         Parses and cleans a tweet
         :param: Text of the tweet
         :return: A cleaned tweet
+        TODO: Update data cleaning function
         """
         if text is None:
             text = self.text_
@@ -125,21 +125,21 @@ def parse_cli():
 
 def main(args):
     """
-    Run streamer
+    Fits LDA topic model to Twitter data
     """
-    if args.creds is not None:
-        with open(ROOT + '/twitter/' + args.creds, 'r') as f:
-            creds = json.load(f)
-    else:
-        print('Invalid API credentials file')
+    if args.creds is None:
+        print("- Need API credentials to stream data -")
         sys.exit(0)
 
-    if args.keys is not None:
-        with open(ROOT + '/twitter/' + args.keys, 'r') as f:
-            keywords = f.read().splitlines()
-    else:
-        print('Invalid keyword file')
+    if args.keys is None:
+        print("- Need list of keywords to track -")
         sys.exit(0)
+    
+    with open(ROOT + '/data/' + args.creds, 'r') as f:
+        creds = json.load(f)
+
+    with open(ROOT + '/data/' + args.keys, 'r') as f:
+        keywords = f.read().splitlines()
 
     time_limit = args.time
 
