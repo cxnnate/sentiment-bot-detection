@@ -21,11 +21,11 @@ class CustomStreamListener(tweepy.StreamListener):
     """
     A custom stream listener object for Tweepy to use for streaming Twitter data
     """
+
     def __init__(self, time_limit): #), tweet_file, user_file):
         """
         :return: A Twepy Stream Listener
         """
-    
         super(CustomStreamListener, self).__init__()
         self.start_time = time.time()
         self.time_limit = time_limit
@@ -34,9 +34,10 @@ class CustomStreamListener(tweepy.StreamListener):
 
     
     def on_error(self, status_code):
-        if status_code == 420:
-            #returning False in on_data disconnects the stream
-            return False
+        """
+        :return: Returns False in on_data disconnects the stream
+        """
+        if status_code == 420: return False
 
 
     def on_status(self, status):
@@ -112,7 +113,6 @@ def parse_cli():
     Reads from command-line arguments
     :return: args
     """
-
     parser = argparse.ArgumentParser(description='Streamer settings')
     parser.add_argument('--creds', type=str, help='Twitter API Credentials file')
     parser.add_argument('--keys', type=str, help='List of keywords to track on Twitter')
