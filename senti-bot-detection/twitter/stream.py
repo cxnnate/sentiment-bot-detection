@@ -1,3 +1,8 @@
+"""
+Author: Nate
+A component to stream data from Twitter using the Tweepy Python package
+"""
+
 import os
 import re
 import sys
@@ -11,10 +16,7 @@ import tweepy
 import pprint
 from tweet import Tweet
 import preprocessor.api as p
-from preprocessor.api import clean, tokenize, parse
 
-
-pp = pprint.PrettyPrinter(indent=4)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class CustomStreamListener(tweepy.StreamListener):
