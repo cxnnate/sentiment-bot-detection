@@ -1,8 +1,12 @@
+
+
+"""
+DEPRECATED: Functionality exists within stream.py
+"""
 import re
 import string
-import preprocessor as p
-# from nltk import word_tokens
-
+import preprocessor.api as p
+from preprocessor.api import clean, tokenize, parse
 
 class Tweet(object):
 
@@ -21,7 +25,7 @@ class Tweet(object):
         # emoji_pattern + re.compile
         if text is None:
             text = self.text_
-        
+
         tweet = p.clean(text)
         tweet = re.sub(r':', '', tweet)
         return tweet
