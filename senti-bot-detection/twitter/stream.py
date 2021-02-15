@@ -9,6 +9,7 @@ import sys
 import csv
 import json
 import time
+import string
 import datetime
 import argparse
 import tweepy
@@ -17,6 +18,7 @@ import pprint
 from tweet import Tweet
 import preprocessor.api as p
 
+# Grab root directory for project (FIXME)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class CustomStreamListener(tweepy.StreamListener):
@@ -63,7 +65,6 @@ class CustomStreamListener(tweepy.StreamListener):
         """
         hashtags = []
         response = json.loads(tweet)
-        
 
         write_tweets = csv.writer(self.tweet_file, quoting=csv.QUOTE_NONNUMERIC, delimiter=',', lineterminator='\n')
         write_users = csv.writer(self.user_file, quoting=csv.QUOTE_NONNUMERIC, delimiter=',', lineterminator='\n')
@@ -104,10 +105,16 @@ class CustomStreamListener(tweepy.StreamListener):
         if text is None:
             text = self.text_
 
+        # Remove punctuation, username, other elements from text
+        text = text.translate(str.maketrans('','',string.punctuation))
+        if re.match(r'^([RT])\w', text):
+            tokens = text.split(' ')
+            text = ' '.join(tokens[2:])
+       
         tweet = p.clean(text)
         tweet = re.sub(r':', '', tweet)
 
-        return tweet
+        return tweet.lower()
 
 
 def parse_cli():
@@ -138,7 +145,7 @@ def main(args):
     with open(ROOT + '/data/' + args.creds, 'r') as f:
         creds = json.load(f)
 
-    with open(ROOT + '/data/' + args.keys, 'r') as f:
+    with open(ROOT + '/twitter/' + args.keys, 'r') as f:
         keywords = f.read().splitlines()
 
     time_limit = args.time
