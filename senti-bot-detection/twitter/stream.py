@@ -28,7 +28,7 @@ class CustomStreamListener(tweepy.StreamListener):
 
     def __init__(self, time_limit): #), tweet_file, user_file):
         """
-        :return: A Twepy Stream Listener
+        :return: A Tweepy Stream Listener
         """
         super(CustomStreamListener, self).__init__()
         self.start_time = time.time()

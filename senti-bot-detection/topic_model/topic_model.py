@@ -10,7 +10,28 @@ from sklearn.feature_extraction.text import CountVectorizer
 # Grab root directory for project (FIXME)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+def create_bow_corpus(docs):
+    """
+    Using Sklearn's CountVectorizer, we create a Bag-of-words representation of the corpus
+    :param corpus: Collection of documents
+    :return: A vectorized corpus and vocabulary
+    """
+    vectorizer = CountVectorizer()
+    corpus = vectorizer.fit_transform(docs)
+    vocab = vectorizer.get_feature_names()
+    vocab = dict([(i, s) for i, s in enumerate(vocab)])
+    corpus = gensim.matutils.Sparse2Corpus(corpus.T)
+
+    return corpus, vocab
+
+
 def clean_document(text):
+    """
+    Executes the final round of data cleaning
+    :param text: A single tweet
+    :return: A processed tweet ready for vectorization 
+    """
     processed_docs = []
     text = re.sub(r'\d+', '', str(text))
     for token in gensim.utils.simple_preprocess(text):
@@ -24,16 +45,19 @@ def data_processing(dataset, nouns=False):
     """
     Executes the functions to prepare our data to fit the model
     :param dataset: The dataset of Tweets
-    :param nouns: A boolean value indicating usage of only nouns
+    :param nouns:  A boolean value indicating usage of only nouns
     :return: we'll see :)
     """
 
-    # print(dataset)
-    corpus = list()
+    # TODO: Parallelize?
+    docs = list()
     for tweet in dataset['clean_text']:
-        corpus.append(clean_document(tweet))
+        docs.append(clean_document(tweet))
+
+    corpus, vocab = create_bow_corpus(docs)
     
     print(corpus)
+    print(vocab)
     
 
 
