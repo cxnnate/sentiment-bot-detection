@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import json
 import argparse
 import gensim
 import sklearn
@@ -10,7 +11,42 @@ from sklearn.feature_extraction.text import CountVectorizer
 # Grab root directory for project (FIXME)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+def display_generate_topics(model, output):
+    """
+    :param:
+    :return:
+    """
+    topic_dict = {}
+    write_output = open(ROOT + '/topic_model/performance/' + output, 'w+')
+    for topic, words in model.print_topics(-1):
+        write_output.write("Topic: {}".format(topic))
+        words = re.sub(r'[\+\*]', '', words)
+        write_output.write("Words: {}".format(words))
 
+        word_distribution = model.show_topics(topic)
+        keywords = ', '.join([word for word, prop in word_distribution])
+        topic_dict[topic] = keywords
+    
+    with open(ROOT + '/topic_model/performance/topics.json', 'w+') as file:
+        json.dump(topic_dict, file)
+
+
+def fit_model(corpus, vocab, docs):
+    """
+    Fits a Latent Dirichlett Allocation model
+    :param:
+    return:
+    """
+    model = gensim.models.LdaModel(corpus=corpus, 
+                                   num_topics=10, 
+                                   alpha=0.4, 
+                                   eta=0.05,
+                                   passes=3,
+                                   id2word=vocab, 
+                                   per_word_topics=True)
+    return model
+
+    
 def create_bow_corpus(docs):
     """
     Using Sklearn's CountVectorizer, we create a Bag-of-words representation of the corpus
@@ -48,18 +84,19 @@ def data_processing(dataset, nouns=False):
     :param nouns:  A boolean value indicating usage of only nouns
     :return: we'll see :)
     """
-
     # TODO: Parallelize?
     docs = list()
     for tweet in dataset['clean_text']:
         docs.append(clean_document(tweet))
 
+    if nouns:
+        print("- Filtering nouns -")
+        # TODO: Fill out conditional
+    
     corpus, vocab = create_bow_corpus(docs)
-    
-    print(corpus)
-    print(vocab)
-    
 
+    return corpus, vocab, docs
+    
 
 def parse_cli():
     """
@@ -69,7 +106,7 @@ def parse_cli():
     parser = argparse.ArgumentParser(description='Topic model settings')
     parser.add_argument('--i', type=str, help='Input file')
     parser.add_argument('--o', type=str, help='Output file')
-    parser.add_argument('--n', type=int, help='Option to use only nouns')
+    parser.add_argument('--n', type=str, default='', help='Option to use only nouns')
 
     return parser.parse_args()
 
@@ -86,14 +123,23 @@ def main(args):
         print("- Need output file -")
         sys.exit(0)
     
+    nouns = None
     if args.n is None:
         nouns = False
     
+    output = args.o
+
     cols = ['created_at', 'tweet_id', 'text', 'clean_text', 'hashtags', 'user_id']
     dataset = pd.read_csv(ROOT + '/data/' + args.i, names=cols)
-    corpus = data_processing(dataset)
 
-    output = args.o
+    # Send our data to another round of processing
+    corpus, vocab, docs = data_processing(dataset, nouns)
+
+    # Fit the LDA model to the data
+    model = fit_model(corpus, vocab, docs)
+
+    # Display topics
+    display_generate_topics(model, output)
 
 
 if __name__ == '__main__':
