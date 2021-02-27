@@ -13,18 +13,20 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def display_generate_topics(model, output):
     """
-    :param:
+    Write topics to a file
+    :param model: LDA model
+    :param output: Output file name
     :return:
     """
     topic_dict = {}
     write_output = open(ROOT + '/topic_model/performance/' + output, 'w+')
     for topic, words in model.print_topics(-1):
-        write_output.write("Topic: {}".format(topic))
+        write_output.write("\nTopic: {}".format(topic))
         words = re.sub(r'[\+\*]', '', words)
-        write_output.write("Words: {}".format(words))
+        write_output.write("\nWords: {}\n".format(words))
 
         word_distribution = model.show_topics(topic)
-        keywords = ', '.join([word for word, prop in word_distribution])
+        keywords = ', '.join([str(word) for word, prop in word_distribution])
         topic_dict[topic] = keywords
     
     with open(ROOT + '/topic_model/performance/topics.json', 'w+') as file:
@@ -34,7 +36,9 @@ def display_generate_topics(model, output):
 def fit_model(corpus, vocab, docs):
     """
     Fits a Latent Dirichlett Allocation model
-    :param:
+    :param corpus: BoW corpus
+    :param vocab: vocabulary mappings for corpus
+    :param docs: documents
     return:
     """
     model = gensim.models.LdaModel(corpus=corpus, 

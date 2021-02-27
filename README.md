@@ -1,6 +1,6 @@
 # Sentiment Bot Detector
 
-This projects stems from a problem I was trying to solve at my job. I never got to finish it, but I wanted to keep working on it. The goal of the project was to perform analysis on tweets. We wanted to understand how social spambots affect the overall sentiment of a topic. My aim for this project is to turn this idea into a usable web application and expand the services implement techiques to fight disinformation. 
+This projects stems from a problem I was trying to solve at my job. I never got to finish it, but I wanted to keep working on it. The goal of the project was to perform analysis on tweets. We wanted to understand how social spambots affect the overall sentiment of a topic. My aim for this project is to turn this idea into a usable web application and expand the services by implementing state-of-the-art natural language processing techiques to fight disinformation. 
 
 ## Data Collecting
 

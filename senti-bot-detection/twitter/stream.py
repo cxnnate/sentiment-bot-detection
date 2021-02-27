@@ -18,6 +18,8 @@ import pprint
 from tweet import Tweet
 import preprocessor.api as p
 
+from flask import Flask
+
 # Grab root directory for project (FIXME)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,8 +27,8 @@ class CustomStreamListener(tweepy.StreamListener):
     """
     A custom stream listener object for Tweepy to use for streaming Twitter data
     """
-
-    def __init__(self, time_limit): #), tweet_file, user_file):
+1
+    def __init__(self, time_limit):
         """
         :return: A Tweepy Stream Listener
         """
